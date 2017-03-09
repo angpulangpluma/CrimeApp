@@ -14,7 +14,7 @@ public class CrimeInfo {
     
     private double x;
     private double y;
-    private String crimename;
+//    private String crimename;
     private String loc;
     
     public CrimeInfo(){

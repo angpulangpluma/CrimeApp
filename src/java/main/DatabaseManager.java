@@ -90,6 +90,22 @@ public class DatabaseManager {
         return id;
     }
     
+    public String getLocName(int id){
+        String result = "";
+        String sql = "SELECT name FROM loc_name WHERE id=" + id + ";";
+        ResultSet rs = null;
+        try{
+            rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                result = rs.getString("name");
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
+    
     public void insertCoords(double x, double y, String name){
         int id = getLocID(name);
         String sql = "";
@@ -110,7 +126,7 @@ public class DatabaseManager {
         }
     }
     
-    public int getCoords(double x, double y){
+    public int getCoordID(double x, double y){
         int id = -1;
         String sql = "SELECT coord_id FROM coords WHERE x=" +
                 x + " AND y=" + y + ";";
@@ -125,6 +141,38 @@ public class DatabaseManager {
         }
         
         return id;
+    }
+    
+    public ArrayList<CrimeInfo> getCoords(){
+        ArrayList<CrimeInfo> crimelist = new ArrayList<>();
+        ArrayList<Integer> crimelocid = new ArrayList<Integer>();
+        ArrayList<Double> xs = new ArrayList<Double>();
+        ArrayList<Double> ys = new ArrayList<Double>();
+        String sql = "SELECT * FROM coords;";
+        ResultSet rs = null;
+        try{
+            rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                xs.add(rs.getDouble("x"));
+                ys.add(rs.getDouble("y"));
+                crimelocid.add(rs.getInt("loc_id"));
+//                double x = rs.getDouble("x");
+//                double y = rs.getDouble("y");
+////                String loc_name = getLocName(rs.getInt("loc_id"));
+//                int locid = rs.getInt("loc_id");
+            }
+            if(crimelocid.size()>0){
+                for(int i=0; i<crimelocid.size(); i++){
+                    String loc_name = getLocName(crimelocid.get(i));
+                    CrimeInfo c = new CrimeInfo(xs.get(i), 
+                        ys.get(i), loc_name);
+                    crimelist.add(c);
+                }
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return crimelist;
     }
     
     
