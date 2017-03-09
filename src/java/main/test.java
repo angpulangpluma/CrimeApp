@@ -48,11 +48,17 @@ public class test {
 //        }
 //        ArrayList<String> loc_list;
 //        
-//        System.out.println("Adding 'laguna' as location.");
-//        dbmngr.insertLoc("Laguna");
+        System.out.println("Adding 'makati' as location.");
+        dbmngr.insertLoc("Makati");
+        System.out.println("Adding 'manila' as location.");
+        dbmngr.insertLoc("Manila");
+        System.out.println("Adding 'pasay' as location.");
+        dbmngr.insertLoc("Pasay");
+        System.out.println("Adding 'stc' as location.");
+        dbmngr.insertLoc("STC");
         
-        System.out.println("Adding a point under 'laguna'");
-        dbmngr.insertCoords(14.26247036524762, -121.04294174415632, "Laguna");
+//        System.out.println("Adding a point under 'laguna'");
+//        dbmngr.insertCoords(14.26247036524762, -121.04294174415632, "Laguna");
         
     }
 
