@@ -51,6 +51,9 @@ public class test {
 //        System.out.println("Adding 'laguna' as location.");
 //        dbmngr.insertLoc("Laguna");
         
+        System.out.println("Adding a point under 'laguna'");
+        dbmngr.insertCoords(14.26247036524762, -121.04294174415632, "Laguna");
+        
     }
 
 }

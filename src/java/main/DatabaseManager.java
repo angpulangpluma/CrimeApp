@@ -27,7 +27,7 @@ public class DatabaseManager {
     public DatabaseManager(){
         try{
             System.out.println("Initializing db....");
-            Class.forName(JDBC_DRIVER);
+            Class.forName(JDBC_DRIVER).newInstance();
             
             System.out.println("Connecting to db...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -72,14 +72,16 @@ public class DatabaseManager {
     }
     
     public int getLocID(String name){
-        String sql = "SELECT id FROM loc_name WHERE name=' " +
-                name + "'";
+        String sql = "SELECT id FROM loc_name WHERE name='" +
+                name + "';";
+        System.out.println(sql);
         ResultSet rs = null;
         int id = -1;
         try{
             rs = stmt.executeQuery(sql);
             while(rs.next()){
                 id = rs.getInt("id");
+                System.out.println("There is a result!!!@");
             }
         } catch(Exception e){
             e.printStackTrace();
@@ -89,16 +91,16 @@ public class DatabaseManager {
     }
     
     public void insertCoords(double x, double y, String name){
-        int id = -1;
+        int id = getLocID(name);
         String sql = "";
-        if (getLocID(name)!= -1){
+        if (id > -1){
             try{
-            id = getLocID(name);
-            sql = "INSERT INTO coords(x, y, loc_id) VALUES (" +
-                    x + ", " +
-                    y + ", " +
-                    id + ");";
-            stmt.executeUpdate(sql);
+                id = getLocID(name);
+                sql = "INSERT INTO coords(x, y, loc_id) VALUES (" +
+                        x + ", " +
+                        y + ", " +
+                        id + ");";
+                stmt.executeUpdate(sql);
             } catch(Exception e){
                 e.printStackTrace();
             }
