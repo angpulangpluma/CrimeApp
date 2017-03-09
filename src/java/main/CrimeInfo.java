@@ -21,10 +21,10 @@ public class CrimeInfo {
         
     }
     
-    public CrimeInfo(double x, double y, String crimename, String loc){
+    public CrimeInfo(double x, double y, String loc){
         this.x = x;
         this.y = y;
-        this.crimename = crimename;
+//        this.crimename = crimename;
         this.loc = loc;
     }
     
@@ -36,9 +36,9 @@ public class CrimeInfo {
         this.y = y;
     }
     
-    public void setCrimeName(String crimename){
-        this.crimename = crimename;
-    }
+//    public void setCrimeName(String crimename){
+//        this.crimename = crimename;
+//    }
     
     public void setLoc(String loc){
         this.loc = loc;
@@ -52,9 +52,9 @@ public class CrimeInfo {
         return this.y;
     }
     
-    public String getCrimeName(){
-        return this.crimename;
-    }
+//    public String getCrimeName(){
+//        return this.crimename;
+//    }
     
     public String getLoc(){
         return this.loc;

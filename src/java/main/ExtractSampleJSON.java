@@ -33,13 +33,13 @@ public class ExtractSampleJSON {
             CrimeInfo ci = new CrimeInfo();
             ci.setX((double) jsonObject.get("x"));
             ci.setY((double) jsonObject.get("y"));
-            ci.setCrimeName((String) jsonObject.get("crimename"));
+//            ci.setCrimeName((String) jsonObject.get("crimename"));
             ci.setLoc((String) jsonObject.get("loc"));
             
             System.out.println("Extracted info: ");
             System.out.println("X - " + ci.getX());
             System.out.println("Y - " + ci.getY());
-            System.out.println("Crime Name - " + ci.getCrimeName());
+//            System.out.println("Crime Name - " + ci.getCrimeName());
             System.out.println("Location - " + ci.getLoc());
         } catch (Exception e){
             e.printStackTrace();
