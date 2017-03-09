@@ -55,12 +55,15 @@ public class DatabaseManager {
     public ArrayList<Location> getLoc(){
         String sql = "SELECT * FROM loc_name;";
         ResultSet rs = null;
-        ArrayList<Location> loc_list = null;
+        ArrayList<Location> loc_list = new ArrayList<>();
         try{
             rs = stmt.executeQuery(sql);
             while(rs.next()){
+                System.out.println("Location!!!");
                 int id = rs.getInt("id");
+                System.out.println(id);
                 String name = rs.getString("name");
+                System.out.println(name);
                 Location l = new Location(name, id);
                 loc_list.add(l);
             }
@@ -174,6 +177,39 @@ public class DatabaseManager {
         }
         return crimelist;
     }
+    
+    public ArrayList<CrimeInfo> getCoordsFromLocID(int id){
+        ArrayList<CrimeInfo> crimelist = new ArrayList<>();
+        ArrayList<Integer> crimelocid = new ArrayList<Integer>();
+        ArrayList<Double> xs = new ArrayList<Double>();
+        ArrayList<Double> ys = new ArrayList<Double>();
+        String sql = "SELECT * FROM coords WHERE loc_id="+ id + ";";
+        ResultSet rs = null;
+        try{
+            rs = stmt.executeQuery(sql);
+            while(rs.next()){
+                xs.add(rs.getDouble("x"));
+                ys.add(rs.getDouble("y"));
+                crimelocid.add(rs.getInt("loc_id"));
+//                double x = rs.getDouble("x");
+//                double y = rs.getDouble("y");
+////                String loc_name = getLocName(rs.getInt("loc_id"));
+//                int locid = rs.getInt("loc_id");
+            }
+            if(crimelocid.size()>0){
+                for(int i=0; i<crimelocid.size(); i++){
+                    String loc_name = getLocName(crimelocid.get(i));
+                    CrimeInfo c = new CrimeInfo(xs.get(i), 
+                        ys.get(i), loc_name);
+                    crimelist.add(c);
+                }
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return crimelist;
+    }
+
     
     
     
