@@ -6,20 +6,35 @@
 
 package main;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.ArrayList;
-
+import java.util.Arrays;
+import java.util.Iterator;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 /**
  *
  * @author Marienne Lopez
  */
+
 public class test {
 
     /**
      * @param args the command line arguments
      */
+    public static JSONObject convertCrimeInfoToJson(CrimeInfo c){
+        JSONObject result = new JSONObject();
+        result.put("x", c.getX());
+        result.put("y", c.getY());
+        result.put("loc_name", c.getLoc());
+        return result;
+    }
+    
     public static void main(String[] args) {
         // TODO code application logic here
         
@@ -119,6 +134,7 @@ public class test {
         
         ArrayList<CrimeInfo> crimelist = null;
         ArrayList<Location> loclist = dbmngr.getLoc();
+        JSONObject obj = new JSONObject();
         
 //        for (int i=0; i<crimelist.size(); i++){
 //            CrimeInfo c = crimelist.get(i);
@@ -127,20 +143,69 @@ public class test {
 //            System.out.println("y - " + c.getY());
 //            System.out.println("Location - " + c.getLoc());
 //        }
-        
+        int matched = 0;
         for(int i=0; i<loclist.size(); i++){
             crimelist = dbmngr.getCoordsFromLocID(loclist.get(i).getLocID());
-            CrimeInfo x = crimelist.get(0);
+            //use x to compare with rest of points in db
+            //initialization:
+            //CrimeInfo x = new CrimeList(x, y, loc_id);
+            CrimeInfo x = crimelist.get(i);
             ComputingDistance compdist = new ComputingDistance();
-//            System.out.println("Places in: " + loclist.get(i).getLocName());
-            for(int j=1; j<crimelist.size(); j++){
-//                System.out.println(j+1 + "th element:");
-                System.out.println("x1 - " + x.getX());
-                System.out.println("y1 - " + x.getY());
-                System.out.println("x2 - " + crimelist.get(j).getX());
-                System.out.println("y2 - " + crimelist.get(j).getY());
-                System.out.println("Distance - " + compdist.getDistance(x, crimelist.get(j)));
+    //            System.out.println("Places in: " + loclist.get(i).getLocName());
+            for(int j=0; j<crimelist.size(); j++){
+    //                System.out.println(j+1 + "th element:");
+                if(i!=j && compdist.getDistance(x, crimelist.get(j)) >= 3){
+                    JSONArray list = new JSONArray();
+                    list.add(convertCrimeInfoToJson(x));
+                    list.add(convertCrimeInfoToJson(crimelist.get(j)));
+                    matched++;
+                    obj.put(matched, list);
+//                    obj.put("distance", compdist.getDistance(x, crimelist.get(j)));
+//                    System.out.println("x1 - " + x.getX());
+//                    System.out.println("y1 - " + x.getY());
+//                    System.out.println("x2 - " + crimelist.get(j).getX());
+//                    System.out.println("y2 - " + crimelist.get(j).getY());
+//                    System.out.println("Distance - " + compdist.getDistance(x, crimelist.get(j)));
+                }
             }
+        }
+        obj.put("resultsno", matched);
+        
+        try{
+            FileWriter file = new FileWriter("test.json");
+            file.write(obj.toJSONString());
+            file.flush();
+            file.close();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        System.out.print(obj);
+        
+        System.out.println("Retrieving from json");
+        JSONParser parser = new JSONParser();
+        ArrayList<CrimeInfo> crimeresults = new ArrayList<>();
+        try{
+            Object obj2 = parser.parse(new FileReader("test.json"));
+            JSONObject jsonObject = (JSONObject) obj2;
+            System.out.println(jsonObject);
+//            System.out.print(((Number)jsonObject.get("resultsno")).intValue());
+            for(int i=1; i <= ((Number)jsonObject.get("resultsno")).intValue(); i++){
+                JSONArray cilist = (JSONArray) jsonObject.get(Integer.toString(i));
+                System.out.println(jsonObject.get(Integer.toString(i)));
+                for(Iterator<Object> m = cilist.iterator(); m.hasNext();){
+                    JSONObject item1 = (JSONObject) m.next();
+                    CrimeInfo c1 = new CrimeInfo((double)item1.get("x"), (double)item1.get("y"), (String)item1.get("loc_name"));
+                    JSONObject item2 = (JSONObject) m.next();
+                    CrimeInfo c2 = new CrimeInfo((double)item2.get("x"), (double)item2.get("y"), (String)item2.get("loc_name"));
+                    System.out.println("x1 - " + c1.getX());
+                    System.out.println("y1 - " + c1.getY());
+                    System.out.println("x2 - " + c2.getX());
+                    System.out.println("y2 - " + c2.getY());
+                }
+            }
+        } catch(Exception e){
+            e.printStackTrace();
         }
         
     }
