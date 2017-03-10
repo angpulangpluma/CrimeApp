@@ -20,7 +20,8 @@ public class ComputingDistance {
         double y1 = a.getY();
         double x2 = b.getX();
         double y2 = b.getY();
-        return sqrt(pow((x2-x1), 2) + pow((y2-y1), 2));
+        //one degree (answer to distance formula using points) = 111.32km
+        return sqrt(pow((x2-x1), 2) + pow((y2-y1), 2))*111.32;
     }
 
 }
